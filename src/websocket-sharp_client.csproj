@@ -1,0 +1,23 @@
+﻿
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+      <TargetFramework>netstandard2.0</TargetFramework>
+      <SignAssembly>true</SignAssembly>
+      <Version>2.1</Version>
+      <Company>Granden Inc.</Company>
+      <Authors>Isak Pao</Authors>
+      <Description>websocket-sharp_client provides the WebSocket protocol client.
+
+          It supports:
+          - RFC 6455
+          - WebSocket Client 
+          - Per-message Compression extension
+          - Secure Connection
+          - HTTP Authentication (Basic/Digest)
+          - Query String, Origin header and Cookies
+          - Connecting through the HTTP Proxy server
+          - .NET 4.6 &amp; .NET Standard 2.0</Description>
+      <PackageTags>websocket</PackageTags>
+      <PackageId>WebSocketSharp-granden</PackageId>
+  </PropertyGroup>
+</Project>
