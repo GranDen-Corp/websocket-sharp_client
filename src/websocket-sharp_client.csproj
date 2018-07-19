@@ -1,12 +1,11 @@
-﻿
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
-      <TargetFramework>netstandard2.0</TargetFramework>
-      <SignAssembly>true</SignAssembly>
-      <Version>2.1</Version>
-      <Company>Granden Inc.</Company>
-      <Authors>Isak Pao</Authors>
-      <Description>websocket-sharp_client provides the WebSocket protocol client.
+    <TargetFramework>netstandard2.0</TargetFramework>
+    <SignAssembly>true</SignAssembly>
+    <Version>2.1</Version>
+    <Company>Granden Inc.</Company>
+    <Authors>Isak Pao</Authors>
+    <Description>websocket-sharp_client provides the WebSocket protocol client.
 
           It supports:
           - RFC 6455
@@ -17,7 +16,51 @@
           - Query String, Origin header and Cookies
           - Connecting through the HTTP Proxy server
           - .NET 4.6 &amp; .NET Standard 2.0</Description>
-      <PackageTags>websocket</PackageTags>
-      <PackageId>WebSocketSharp-granden</PackageId>
+    <PackageTags>websocket</PackageTags>
+    <PackageId>WebSocketSharp-granden</PackageId>
   </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
+    <DefineConstants>TRACE;DEBUG;NETSTANDARD;NETSTANDARD2_0;</DefineConstants>
+  </PropertyGroup>
+  <PropertyGroup>
+    <DefineConstants>CLIENT_ONLY</DefineConstants>
+  </PropertyGroup>
+  <ItemGroup>
+    <Compile Remove="websocket-sharp\Example1\**" />
+    <Compile Remove="websocket-sharp\Example2\**" />
+    <Compile Remove="websocket-sharp\Example3\**" />
+    <Compile Remove="websocket-sharp\Example\**" />
+    <Compile Remove="websocket-sharp\websocket-sharp\doc\**" />
+    <Compile Remove="websocket-sharp\websocket-sharp\Server\**" />
+    <Compile Remove="websocket-sharp\Example1\**" />
+    <Compile Remove="websocket-sharp\Example2\**" />
+    <Compile Remove="websocket-sharp\Example3\**" />
+    <Compile Remove="websocket-sharp\Example\**" />
+    <Compile Remove="websocket-sharp\websocket-sharp\Server\**" />
+    <EmbeddedResource Remove="websocket-sharp\Example1\**" />
+    <EmbeddedResource Remove="websocket-sharp\Example2\**" />
+    <EmbeddedResource Remove="websocket-sharp\Example3\**" />
+    <EmbeddedResource Remove="websocket-sharp\Example\**" />
+    <EmbeddedResource Remove="websocket-sharp\websocket-sharp\doc\**" />
+    <EmbeddedResource Remove="websocket-sharp\websocket-sharp\Server\**" />
+    <EmbeddedResource Remove="websocket-sharp\Example1\**" />
+    <EmbeddedResource Remove="websocket-sharp\Example2\**" />
+    <EmbeddedResource Remove="websocket-sharp\Example3\**" />
+    <EmbeddedResource Remove="websocket-sharp\Example\**" />
+    <EmbeddedResource Remove="websocket-sharp\websocket-sharp\Server\**" />
+    <None Remove="websocket-sharp\Example1\**" />
+    <None Remove="websocket-sharp\Example2\**" />
+    <None Remove="websocket-sharp\Example3\**" />
+    <None Remove="websocket-sharp\Example\**" />
+    <None Remove="websocket-sharp\websocket-sharp\doc\**" />
+    <None Remove="websocket-sharp\websocket-sharp\Server\**" />
+    <None Remove="websocket-sharp\websocket-sharp\Server\**" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Remove="websocket-sharp\websocket-sharp\AssemblyInfo.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Remove="websocket-sharp\websocket-sharp\websocket-sharp.snk" />
+    <None Remove="websocket-sharp\websocket-sharp_logo.png" />
+  </ItemGroup>
 </Project>
