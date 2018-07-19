@@ -3,7 +3,13 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 15
 VisualStudioVersion = 15.0.26124.0
 MinimumVisualStudioVersion = 15.0.26124.0
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "websocket-sharp_client", "src\websocket-sharp_client.csproj", "{2116193E-E5E8-4DFC-B949-0112B812B9A9}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "websocket-sharp_client", "src\websocket-sharp_client.csproj", "{2116193E-E5E8-4DFC-B949-0112B812B9A9}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{AD20FD87-D9F3-4880-9CD0-B68A15610E70}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "test", "test", "{3DECFB20-49E1-4AD7-8CB6-6C79A780E55A}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NetCoreClientTest", "test\NetCoreClientTest\NetCoreClientTest.csproj", "{503E1180-BD21-46DA-AD4F-5E659D3E500E}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -13,9 +19,6 @@ Global
 		Release|Any CPU = Release|Any CPU
 		Release|x64 = Release|x64
 		Release|x86 = Release|x86
-	EndGlobalSection
-	GlobalSection(SolutionProperties) = preSolution
-		HideSolutionNode = FALSE
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
 		{2116193E-E5E8-4DFC-B949-0112B812B9A9}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
@@ -30,5 +33,27 @@ Global
 		{2116193E-E5E8-4DFC-B949-0112B812B9A9}.Release|x64.Build.0 = Release|Any CPU
 		{2116193E-E5E8-4DFC-B949-0112B812B9A9}.Release|x86.ActiveCfg = Release|Any CPU
 		{2116193E-E5E8-4DFC-B949-0112B812B9A9}.Release|x86.Build.0 = Release|Any CPU
+		{503E1180-BD21-46DA-AD4F-5E659D3E500E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{503E1180-BD21-46DA-AD4F-5E659D3E500E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{503E1180-BD21-46DA-AD4F-5E659D3E500E}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{503E1180-BD21-46DA-AD4F-5E659D3E500E}.Debug|x64.Build.0 = Debug|Any CPU
+		{503E1180-BD21-46DA-AD4F-5E659D3E500E}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{503E1180-BD21-46DA-AD4F-5E659D3E500E}.Debug|x86.Build.0 = Debug|Any CPU
+		{503E1180-BD21-46DA-AD4F-5E659D3E500E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{503E1180-BD21-46DA-AD4F-5E659D3E500E}.Release|Any CPU.Build.0 = Release|Any CPU
+		{503E1180-BD21-46DA-AD4F-5E659D3E500E}.Release|x64.ActiveCfg = Release|Any CPU
+		{503E1180-BD21-46DA-AD4F-5E659D3E500E}.Release|x64.Build.0 = Release|Any CPU
+		{503E1180-BD21-46DA-AD4F-5E659D3E500E}.Release|x86.ActiveCfg = Release|Any CPU
+		{503E1180-BD21-46DA-AD4F-5E659D3E500E}.Release|x86.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{2116193E-E5E8-4DFC-B949-0112B812B9A9} = {AD20FD87-D9F3-4880-9CD0-B68A15610E70}
+		{503E1180-BD21-46DA-AD4F-5E659D3E500E} = {3DECFB20-49E1-4AD7-8CB6-6C79A780E55A}
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {C2FEA910-31C0-4309-9B4C-4DD234C1785C}
 	EndGlobalSection
 EndGlobal
