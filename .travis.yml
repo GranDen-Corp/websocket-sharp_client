@@ -6,12 +6,20 @@ dotnet: 2.1.302
 solution: Websocket-sharp_client.sln
 jobs:
   include:
-    - stage: "Build"
-      name: "Build solution file"
-      script: dotnet build
-    - stage: "Tests"
-      name: "Run End-to-End tests"
-      script: dotnet test test/NetCoreClientTest
-    - stage: "Package"
-      name: "Create debuggable Nuget package"
-      script: dotnet pack --include-source src/websocket-sharp_client.csproj --output ../build
+  - stage: Build
+    name: Build solution file
+    script: dotnet build
+  - stage: Tests
+    name: Run End-to-End tests
+    script: dotnet test test/NetCoreClientTest
+  - stage: Package
+    name: Create debuggable Nuget package
+    script: dotnet pack --include-source src/websocket-sharp_client.csproj --output
+      ../build
+deploy:
+  provider: releases
+  api_key:
+    secure: mCitxrE0vjYi8l31t6PopCTogwz5sBEbkpT1jFmK226TmqZ37krCr//IDTGmaTmUSvELE31/upYkxCNdqIUdFmGfyz4B0YOaNEc+X8Ls9LXI7Gp7hz9tVx6ZuDXcp47j2xjxbNZgwyHf9kTBxd54A4OUViaIHm4fhxZ6emlDn+3s38ubNR1xTMJTENKg/vpiuwHGoDgcPbx1uf3YkaVrwZvAVhQdSqt3+6zem9jYi0CnaT3AYr06Md8TNhowyfmDmKwKM5dHuFyyQwfW+gk84MfS0MvqWSlqCCx5Z1ogRG8tlLSiltj4Fk9UwlrZIyEBEfuOSgiPoNceW926Do5N736Jx+J2M9huowFVJrjJ2+xQf5c48/ELlqMqyeABIU0+sbelCuVRrqXPkP4VryF0VBPNYSZ3cFuYBl22PTHFPORb3rZAW46k5QsJXQDJRd3neYXJ2mH0iFw53e7TUQQOSb1UMHvlDijG/f1mZb11xo+lCrvo0I0PFVrv/0ttAuW0maDj1ai4UTaKY+wDBkYCRRL/GqAsR6K9NFVi2U+HuGaEwB+yZzfLhOEr+mqKbIeZhCFWJSGBQk4CSmP9qRiuoSCpjWL8LPX1NA/bmNu1oN4Ku3JfyOz6z0c9CN4ARzj3sU8yLhI3aECKSdMo6ecXs6x+/ifNmM7nw0v6XsAFsbg=
+  file: build/*.nupkg
+  on:
+    repo: windperson/websocket-sharp_client
