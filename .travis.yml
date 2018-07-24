@@ -4,8 +4,6 @@ sudo: false
 mono: none
 dotnet: 2.1.302
 solution: Websocket-sharp_client.sln
-install:
-  - dotnet restore
 script:
   - dotnet build
-  - dotent test test/NetCoreClientTest.csproj
+  - dotnet test test/NetCoreClientTest.csproj
