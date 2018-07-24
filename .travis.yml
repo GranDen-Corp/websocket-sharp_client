@@ -6,4 +6,4 @@ dotnet: 2.1.302
 solution: Websocket-sharp_client.sln
 script:
   - dotnet build
-  - dotnet test test/NetCoreClientTest.csproj
+  - dotnet test test/NetCoreClientTest
