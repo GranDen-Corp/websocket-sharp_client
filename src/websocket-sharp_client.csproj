@@ -55,6 +55,7 @@
     <None Remove="websocket-sharp\websocket-sharp\doc\**" />
     <None Remove="websocket-sharp\websocket-sharp\Server\**" />
     <None Remove="websocket-sharp\websocket-sharp\Server\**" />
+    <Compile Remove="websocket-sharp\websocket-sharp\Net\WebSockets\TcpListenerWebSocketContext.cs" />
   </ItemGroup>
   <ItemGroup>
     <Compile Remove="websocket-sharp\websocket-sharp\AssemblyInfo.cs" />
