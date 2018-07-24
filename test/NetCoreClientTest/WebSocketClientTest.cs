@@ -46,12 +46,12 @@ namespace NetCoreClientTest
                         Assert.Equal(originData.Length, receiveResult.Count);
                         Assert.Equal(WebSocketMessageType.Binary, receiveResult.MessageType);
                         Assert.Equal(originData, serverBuffer);
-                        
+
                         receiveResult =
                             await webSocket.ReceiveAsync(new ArraySegment<byte>(serverBuffer),
                                 CancellationToken.None);
                     }
-                    
+
                     await webSocket.CloseAsync(receiveResult.CloseStatus.Value, receiveResult.CloseStatusDescription,
                         CancellationToken.None);
                 }
@@ -72,6 +72,104 @@ namespace NetCoreClientTest
         }
 
         [Fact]
+        public async Task ClientCanReceiveBinaryData()
+        {
+            //Arrange
+            const string clientAddress = "ws://localhost:54323/ws";
+            const string serverAddress = "http://localhost:54323";
+            const string sendText = "Hello World";
+            var sendData = Encoding.UTF8.GetBytes(sendText);
+            var config = NetCoreWebSocketHelper.CreateConfigWithUrl(serverAddress);
+            using (var server = NetCoreWebSocketHelper.CreateTestServer(config, _testOutputHelper, async httpContext =>
+            {
+                if (httpContext.Request.Path == "/ws")
+                {
+                    Assert.True(httpContext.WebSockets.IsWebSocketRequest);
+                    var websocket = await httpContext.WebSockets.AcceptWebSocketAsync();
+                    var serverBuffer = new byte[1024 * 4];
+                    WebSocketReceiveResult receiveResult;
+                    do
+                    {
+                        await websocket.SendAsync(sendData, WebSocketMessageType.Binary, true, CancellationToken.None);
+                        receiveResult = await websocket.ReceiveAsync(serverBuffer, CancellationToken.None);
+                    } while (!receiveResult.CloseStatus.HasValue);
+
+                    await websocket.CloseAsync(WebSocketCloseStatus.NormalClosure, "stop connection",
+                        CancellationToken.None);
+                }
+            }))
+            {
+                await server.StartAsync();
+                using (var ws = new WebSocketSharp.WebSocket(clientAddress))
+                {
+                    var hasReceive = false;
+                    ws.OnMessage += (sender, args) =>
+                    {
+                        Assert.True(args.IsBinary);
+                        var data = args.RawData;
+                        Assert.Equal(sendData.Length, data.Length);
+                        Assert.Equal(sendData, data);
+
+                        hasReceive = true;
+                    };
+                    ws.Connect();
+                    SpinWait.SpinUntil(() => hasReceive);
+                }
+            }
+        }
+
+
+        [Fact]
+        public async Task ClientCanReceiveTextData()
+        {
+            //Arrange
+            const string clientAddress = "ws://localhost:54324/ws";
+            const string serverAddress = "http://localhost:54324";
+
+            const string sendText = "Hello World";
+            var config = NetCoreWebSocketHelper.CreateConfigWithUrl(serverAddress);
+
+            using (var server = NetCoreWebSocketHelper.CreateTestServer(config, _testOutputHelper,
+                async httpContext =>
+                {
+                    if (httpContext.Request.Path == "/ws")
+                    {
+                        Assert.True(httpContext.WebSockets.IsWebSocketRequest);
+                        var websocket = await httpContext.WebSockets.AcceptWebSocketAsync();
+                        var serverBuffer = new byte[1024 * 4];
+                        WebSocketReceiveResult receiveResult;
+                        do
+                        {
+                            await websocket.SendAsync(new ArraySegment<byte>(Encoding.UTF8.GetBytes(sendText)),
+                                WebSocketMessageType.Text, true, CancellationToken.None);
+                            receiveResult = await websocket.ReceiveAsync(serverBuffer, CancellationToken.None);
+                        } while (!receiveResult.CloseStatus.HasValue);
+
+                        await websocket.CloseAsync(WebSocketCloseStatus.NormalClosure, "stop connection",
+                            CancellationToken.None);
+                    }
+                }))
+            {
+                await server.StartAsync();
+                using (var ws = new WebSocketSharp.WebSocket(clientAddress))
+                {
+                    var hasReceive = false;
+                    ws.OnMessage += (sender, args) =>
+                    {
+                        Assert.True(args.IsText);
+                        var data = args.Data;
+                        Assert.Equal(sendText.Length, data.Length);
+                        Assert.Equal(sendText, data);
+                        hasReceive = true;
+                    };
+                    ws.Connect();
+                    SpinWait.SpinUntil(() => hasReceive);
+                }
+            }
+        }
+
+
+        [Fact]
         public async Task ClientCanSendTextData()
         {
             //Arrange
@@ -79,7 +177,7 @@ namespace NetCoreClientTest
             const string serverAddress = "http://localhost:54322";
 
             var config = NetCoreWebSocketHelper.CreateConfigWithUrl(serverAddress);
-            var textData = "Hello World";
+            const string textData = "Hello World";
 
             using (var server =
                 NetCoreWebSocketHelper.CreateTestServer(config, _testOutputHelper, async httpContext =>
@@ -90,7 +188,6 @@ namespace NetCoreClientTest
                         var webSocket = await httpContext.WebSockets.AcceptWebSocketAsync();
 
                         var serverBuffer = new byte[1024 * 4];
-
 
                         var receiveResult =
                             await webSocket.ReceiveAsync(new ArraySegment<byte>(serverBuffer), CancellationToken.None);
@@ -108,7 +205,8 @@ namespace NetCoreClientTest
                                     CancellationToken.None);
                         }
 
-                        await webSocket.CloseAsync(receiveResult.CloseStatus.Value, receiveResult.CloseStatusDescription,
+                        await webSocket.CloseAsync(receiveResult.CloseStatus.Value,
+                            receiveResult.CloseStatusDescription,
                             CancellationToken.None);
                     }
                 }))
