@@ -1,8 +1,8 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
     <TargetFramework>netstandard2.0</TargetFramework>
-    <SignAssembly>true</SignAssembly>
-    <VersionPrefix>2.1.0</VersionPrefix>
+    <SignAssembly>false</SignAssembly>
+    <VersionPrefix>1.0.0</VersionPrefix>
     <VersionSuffix>$(VersionSuffix)</VersionSuffix>
     <Company>Granden Inc.</Company>
     <Authors>Isak Pao</Authors>
@@ -18,13 +18,16 @@
           - Connecting through the HTTP Proxy server
           - .NET 4.6 &amp; .NET Standard 2.0</Description>
     <PackageTags>websocket</PackageTags>
-    <PackageId>WebSocketSharp-granden</PackageId>
+    <PackageId>WebSocketSharp-client</PackageId>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
     <DefineConstants>TRACE;DEBUG;NETSTANDARD;NETSTANDARD2_0;</DefineConstants>
+    <DocumentationFile>bin\Debug\netstandard2.0\websocket-sharp_client.xml</DocumentationFile>
   </PropertyGroup>
   <PropertyGroup>
-    <DefineConstants>CLIENT_ONLY</DefineConstants>
+    <DefineConstants>CLIENT_ONLY;USE_TLS12;NETSTANDARD2_0</DefineConstants>
+    <RepositoryType>git</RepositoryType>
+    <RepositoryUrl>https://github.com/windperson/websocket-sharp_client</RepositoryUrl>
   </PropertyGroup>
   <ItemGroup>
     <Compile Remove="websocket-sharp\Example1\**" />
@@ -63,6 +66,7 @@
   </ItemGroup>
   <ItemGroup>
     <None Remove="websocket-sharp\websocket-sharp\websocket-sharp.snk" />
+    <None Remove="websocket-sharp\websocket-sharp_icon.png" />
     <None Remove="websocket-sharp\websocket-sharp_logo.png" />
   </ItemGroup>
 </Project>
