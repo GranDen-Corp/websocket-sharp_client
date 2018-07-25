@@ -24,8 +24,8 @@ namespace NetCoreClientTest
         public async Task ClientCanSendModifiedTextWhenReceivedFromServer()
         {
             //Arrange
-            const string clientAddress = "wss://localhost:54421/ws";
-            const string serverAddress = "https://localhost:54421";
+            const string clientAddress = "wss://localhost:54221/ws";
+            const string serverAddress = "https://localhost:54221";
 
             var config = NetCoreWebSocketHelper.CreateConfigWithUrl(serverAddress);
             const string textData = "Hello World";
@@ -65,6 +65,11 @@ namespace NetCoreClientTest
                 }
             });
 
+            var logger = new Logger(LogLevel.Debug,null,(logData, _) =>
+            {
+                _testOutputHelper.WriteLine(logData.Message);
+            });
+
             //Act & Assert
             using (var server = NetCoreWebSocketHelper.CreateTestServer(config, _testOutputHelper, serverAction, true))
             {
@@ -72,7 +77,7 @@ namespace NetCoreClientTest
                 using (var ws = new WebSocketSharp.WebSocket(clientAddress))
                 {
                     var hasComplete = false;
-                    
+                     ws.Log = logger;
                     ws.OnMessage += (sender, args) =>
                     {
                         Assert.True(args.IsText,"websocket should be text mode");
@@ -98,8 +103,8 @@ namespace NetCoreClientTest
         public async Task ClientCannotUseWrongProtolToConnectServer()
         {
             //Arrange
-            const string clientAddress = "ws://localhost:54422/ws";
-            const string serverAddress = "https://localhost:54422";
+            const string clientAddress = "ws://localhost:54222/ws";
+            const string serverAddress = "https://localhost:54222";
 
             var config = NetCoreWebSocketHelper.CreateConfigWithUrl(serverAddress);
             var clientTestPassed = false;
