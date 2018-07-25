@@ -12,13 +12,9 @@ jobs:
   - stage: Tests
     name: Run End-to-End tests
     script: dotnet test test/NetCoreClientTest
-  - stage: Package
-    name: Create debuggable Nuget package
-    script: dotnet pack --include-source src/websocket-sharp_client.csproj --output
-      ../build
   - stage: Release
     name: Upload Nuget packages to github
-    script: skip
+    script: dotnet pack --include-source src/websocket-sharp_client.csproj --output ../build
     deploy:
       provider: releases
       skip_cleanup: true
