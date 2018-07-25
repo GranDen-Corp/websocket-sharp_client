@@ -24,8 +24,8 @@ namespace NetCoreClientTest
         public async Task ClientCanSendModifiedTextWhenReceivedFromServer()
         {
             //Arrange
-            const string clientAddress = "wss://localhost:54321/ws";
-            const string serverAddress = "https://localhost:54321";
+            const string clientAddress = "wss://localhost:54421/ws";
+            const string serverAddress = "https://localhost:54421";
 
             var config = NetCoreWebSocketHelper.CreateConfigWithUrl(serverAddress);
             const string textData = "Hello World";
@@ -98,11 +98,10 @@ namespace NetCoreClientTest
         public async Task ClientCannotUseWrongProtolToConnectServer()
         {
             //Arrange
-            const string clientAddress = "ws://localhost:54322/ws";
-            const string serverAddress = "https://localhost:54322";
+            const string clientAddress = "ws://localhost:54422/ws";
+            const string serverAddress = "https://localhost:54422";
 
             var config = NetCoreWebSocketHelper.CreateConfigWithUrl(serverAddress);
-            const string textData = "Hello World";
             var clientTestPassed = false;
 
             var serverAction = new Func<HttpContext, Task>(async httpContext =>
