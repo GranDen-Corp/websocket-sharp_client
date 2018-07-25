@@ -267,7 +267,8 @@ namespace NetCoreClientTest
                     ws.OnMessage += (sender, args) =>
                     {
                         var data = args.Data;
-                        ws.Send(data);
+                        Assert.Equal(textData, data);
+                        (sender as WebSocketSharp.WebSocket)?.Send(data);
                         hasSent = true;
                     };
                     ws.Connect();
