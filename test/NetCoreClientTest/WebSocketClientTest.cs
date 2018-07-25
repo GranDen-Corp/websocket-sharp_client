@@ -222,7 +222,7 @@ namespace NetCoreClientTest
         }
 
         [Fact]
-        public async Task ClientCanSendWhatTextItReceived()
+        public async Task ClientCanSendWhatTextIsReceived()
         {
             //Arrange
             const string clientAddress = "ws://localhost:54325/ws";
@@ -258,6 +258,8 @@ namespace NetCoreClientTest
                         CancellationToken.None);
                 }
             });
+            
+            //Act & Assert
             using (var server = NetCoreWebSocketHelper.CreateTestServer(config, _testOutputHelper, serverAction))
             {
                 await server.StartAsync();

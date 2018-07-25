@@ -30,6 +30,11 @@
     <RepositoryUrl>https://github.com/windperson/websocket-sharp_client</RepositoryUrl>
   </PropertyGroup>
   <ItemGroup>
+    <AssemblyAttribute Include="System.Runtime.CompilerServices.InternalsVisibleTo">
+      <_Parameter1>NetCoreClientTest</_Parameter1>
+    </AssemblyAttribute>
+  </ItemGroup>
+  <ItemGroup>
     <Compile Remove="websocket-sharp\Example1\**" />
     <Compile Remove="websocket-sharp\Example2\**" />
     <Compile Remove="websocket-sharp\Example3\**" />

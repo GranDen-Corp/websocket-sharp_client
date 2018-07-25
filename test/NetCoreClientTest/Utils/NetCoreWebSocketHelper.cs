@@ -12,10 +12,15 @@ namespace NetCoreClientTest.Utils
 {
     public static class NetCoreWebSocketHelper
     {
-        public static IWebHost CreateTestServer(IConfiguration config, ITestOutputHelper testOutputHelper, Func<HttpContext, Task> app)
+        public static IWebHost CreateTestServer(IConfiguration config, ITestOutputHelper testOutputHelper, Func<HttpContext, Task> app, bool forceHttps = false)
         {
             Action<IApplicationBuilder> startup = builder =>
             {
+                if (forceHttps)
+                {
+                    builder.UseHttpsRedirection();
+                    //builder.UseHsts();
+                }
                 builder.Use(async (context, next) =>
                 {
                     try
