@@ -26,3 +26,8 @@ jobs:
         branch: master
         tags: true
         repo: windperson/websocket-sharp_client
+stages:
+  - Build
+  - Tests
+  - name: Release
+    if: tag IS present
