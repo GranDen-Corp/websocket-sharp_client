@@ -7,13 +7,14 @@ solution: Websocket-sharp_client.sln
 jobs:
   include:
   - stage: Build
-    name: Build solution file
+    name: "Build solution file"
     script: dotnet build
   - stage: Tests
-    name: Run End-to-End tests
+    name: "Run End-to-End tests"
     script: dotnet test test/NetCoreClientTest
   - stage: Release
-    name: Upload Nuget packages to github
+    if: branch = master
+    name: "Build & Upload Nuget packages to github"
     script: dotnet pack --include-source src/websocket-sharp_client.csproj --output ../build
     deploy:
       provider: releases
@@ -23,4 +24,5 @@ jobs:
       file_glob: true
       file: build/*.nupkg
       on:
+        tags: true
         repo: windperson/websocket-sharp_client
