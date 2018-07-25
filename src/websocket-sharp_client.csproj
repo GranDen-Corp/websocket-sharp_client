@@ -2,7 +2,8 @@
   <PropertyGroup>
     <TargetFramework>netstandard2.0</TargetFramework>
     <SignAssembly>true</SignAssembly>
-    <Version>2.1</Version>
+    <VersionPrefix>2.1.0</VersionPrefix>
+    <VersionSuffix>$(VersionSuffix)</VersionSuffix>
     <Company>Granden Inc.</Company>
     <Authors>Isak Pao</Authors>
     <Description>websocket-sharp_client provides the WebSocket protocol client.

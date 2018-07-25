@@ -13,7 +13,6 @@ jobs:
     name: "Run End-to-End tests"
     script: dotnet test test/NetCoreClientTest
   - stage: Release
-    if: branch = master
     name: "Build & Upload Nuget packages to github"
     script: dotnet pack --include-source src/websocket-sharp_client.csproj --output ../build
     deploy:
@@ -24,5 +23,6 @@ jobs:
       file_glob: true
       file: build/*.nupkg
       on:
+        branch: master
         tags: true
         repo: windperson/websocket-sharp_client
