@@ -25,7 +25,8 @@ namespace NetCoreClientTest
             //Arrange
             const string clientAddress = "ws://localhost:54321/ws";
             const string serverAddress = "http://localhost:54321";
-
+            var serverTestComplte = false;
+            
             var config = NetCoreWebSocketHelper.CreateConfigWithUrl(serverAddress);
             var originData = Encoding.UTF8.GetBytes("Hello World");
             var serverAction = new Func<HttpContext, Task>(async context =>
@@ -33,11 +34,11 @@ namespace NetCoreClientTest
                 if (context.Request.Path == "/ws")
                 {
                     Assert.True(context.WebSockets.IsWebSocketRequest);
-                    var webSocket = await context.WebSockets.AcceptWebSocketAsync();
+                    var webSocket = await context.WebSockets.AcceptWebSocketAsync().OrTimeout();
 
                     var serverBuffer = new byte[originData.Length];
                     var receiveResult =
-                        await webSocket.ReceiveAsync(new ArraySegment<byte>(serverBuffer), CancellationToken.None);
+                        await webSocket.ReceiveAsync(new ArraySegment<byte>(serverBuffer), CancellationToken.None).OrTimeout();
 
                     while (!receiveResult.CloseStatus.HasValue)
                     {
@@ -45,15 +46,16 @@ namespace NetCoreClientTest
                         Assert.True(receiveResult.EndOfMessage);
                         Assert.Equal(originData.Length, receiveResult.Count);
                         Assert.Equal(WebSocketMessageType.Binary, receiveResult.MessageType);
-                        Assert.Equal(originData, serverBuffer);
+                        Assert.NotEqual(originData, serverBuffer);
 
                         receiveResult =
                             await webSocket.ReceiveAsync(new ArraySegment<byte>(serverBuffer),
-                                CancellationToken.None);
+                                CancellationToken.None).OrTimeout();
                     }
 
                     await webSocket.CloseAsync(receiveResult.CloseStatus.Value, receiveResult.CloseStatusDescription,
-                        CancellationToken.None);
+                        CancellationToken.None).OrTimeout();
+                    serverTestComplte = true;
                 }
             });
 
@@ -69,6 +71,7 @@ namespace NetCoreClientTest
                     ws.Close();
                 }
             }
+            Assert.True(serverTestComplte, "server validation failed");
         }
 
         [Fact]
