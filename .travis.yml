@@ -7,20 +7,22 @@ solution: Websocket-sharp_client.sln
 jobs:
   include:
   - stage: Build
-    name: "Build solution file"
+    name: Build solution file
     script: dotnet build
   - stage: Tests
-    name: "Run End-to-End tests"
-    script: dotnet dev-certs https && dotnet test test/NetCoreClientTest --verbosity minimal
+    name: Run End-to-End tests
+    script: dotnet dev-certs https && dotnet test test/NetCoreClientTest --verbosity
+      minimal
   - stage: Release
-    name: "Build & Upload Nuget packages to github"
-    script: dotnet pack src/websocket-sharp_client.csproj --include-source --output ../build
+    name: Build & Upload Nuget packages to github
+    script: dotnet pack src/websocket-sharp_client.csproj --include-source --output
+      ../build
     deploy:
       provider: releases
       skip_cleanup: true
       overwrite: true
       api_key:
-        secure: bVsMLx/LRne87odZT+MYlPeVMXi0TYJqWtg9rnEgZQoW4l/fABlbUJ3+c2YQcWVKh8qf8VeVq2xDPe6yatVyIWG0YvU6HVxjjONOEaKtpYrsGiddjuGMTJMLOMW08ga7w8M4X2/BQd3Y275kWkUJCqL9fVIw8B6zEHwl077wsUHV/tZlm6uIwIpsu5uDeU9lPhV8icWUjqfnrLHVORYqAHUQ9HvG/OOQvJGorp9wa9h+HoVGOgLIH05sNEF7B+7AUMFo1pGQQpjPxEMJRKF8FTW57zIIhFS8uDdYHSImFO6yJ0s1xksuqe1yyDIaO2cXSu2KNiysZ+6V4xs04urFdwgLeWdYLR+PmWyPeFdxHJTidcI+cuhydk7J5luqRTFUtaS1CVka49DtGdjbrD1UzVL2rt2aZ0SJIxn4SexhlbF+OyJce2VGM0upR5amfchNjg9qDcRZYvBEVenppK+HT8sqqXtE+o8OpK3Aas/dyibu6MHb+QmgNVH0zjLqiZYSxCinQqghSrgFy9Ou+/qyN+9DSePSargNWfDnKhViUpvy42p62O5Qe+Wa9A939DItSA8uArj3TkRPo05xaM3oOz67GH+M0J9HaCYm0mceIUHrV+fdJO0lEZ3+mI5QfEiNx6AqGeAUgfSFUSqQUslWmbw/NxcEoV4LWffOkVwlJ5Y=
+        secure: ynph7TdsTkb8McacwXHYGOjW0Cacvcxn697S+rg9g4sf3Yq2x8FIWELv7yhZQLGBSI7ZV0uMn2yT/2T1kwqi8CSA0uYBBKHC6a0gOqZtrpS+1YUbWol0+lwvv2BFqNhrfXaIlQIxtcY4VOpEgR7+iQFtSeNllQvsShUJovkFm7j57Yk2bBwhtbG9Yw5iFmsxRhla3He8R/J3ZcfLuTef1l8ElRFmPxvK2X+zkYwFzUDaK80VOlV/2DK7+Zg41eXkuSjSzjd7sxOBfmYO8EzCKeTwmRRbX9AJoEsjoGYV9I0LzkaUAZ/3KibnszeMwAsqJDR02tRVY9IR7wifPFBuTELxM0XHl0Bfiw9aEKqxhjdM1kYUgPjPG5kRstBrLshVVf3egjfyw+RsKX4P6KxSo8RCzx5jiDW9z4h2Q6TPHOje9hlbqcoiekPWwLM92M4hS+oqVSoQr6SgPmSUhY5rYw4RuBc0An8RUew/OsbB+G7ZP3aghgzGcgx1TC7H69CtIutYwW3tJhuuNyWRze93dV9fRee4WNFtpUJmf8UrdSffciOBrWV/txwnyhD1LQHYs5km2W/HijOH1vX1qfxEwes4otwkALjaB2JZurikv2bzJ3CgzYnv17BtpuAC5KAToyPq8obdP1UTRVY+nARhgYhq1CzER3d/xsv/1Tb0RsI=
       file_glob: true
       file: build/*.nupkg
       on:
@@ -28,7 +30,7 @@ jobs:
         tags: true
         repo: windperson/websocket-sharp_client
 stages:
-  - Build
-  - Tests
-  - name: Release
-    if: tag IS present
+- Build
+- Tests
+- name: Release
+  if: tag IS present
