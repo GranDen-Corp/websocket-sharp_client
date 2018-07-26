@@ -46,7 +46,7 @@ namespace NetCoreClientTest
                         Assert.True(receiveResult.EndOfMessage);
                         Assert.Equal(originData.Length, receiveResult.Count);
                         Assert.Equal(WebSocketMessageType.Binary, receiveResult.MessageType);
-                        Assert.NotEqual(originData, serverBuffer);
+                        Assert.Equal(originData, serverBuffer);
 
                         receiveResult =
                             await webSocket.ReceiveAsync(new ArraySegment<byte>(serverBuffer),
@@ -62,16 +62,17 @@ namespace NetCoreClientTest
             //Act
             using (var server = NetCoreWebSocketHelper.CreateTestServer(config, _testOutputHelper, serverAction))
             {
-                await server.StartAsync();
+                await server.StartAsync().OrTimeout();
 
                 using (var ws = new WebSocketSharp.WebSocket(clientAddress))
                 {
+                    ws.Log = CreateWebSocketLogger();
                     ws.Connect();
                     ws.Send(originData);
                     ws.Close();
                 }
             }
-            Assert.True(serverTestComplte, "server validation failed");
+            Assert.True(serverTestComplte, "server test assertion fail");
         }
 
         [Fact]
@@ -83,43 +84,51 @@ namespace NetCoreClientTest
             const string sendText = "Hello World";
             var sendData = Encoding.UTF8.GetBytes(sendText);
             var config = NetCoreWebSocketHelper.CreateConfigWithUrl(serverAddress);
+            var serverTestComplete = false;
+            var clientTestComplete = false;
+
+            //Act & Assert
             using (var server = NetCoreWebSocketHelper.CreateTestServer(config, _testOutputHelper, async httpContext =>
             {
                 if (httpContext.Request.Path == "/ws")
                 {
                     Assert.True(httpContext.WebSockets.IsWebSocketRequest);
-                    var websocket = await httpContext.WebSockets.AcceptWebSocketAsync();
+                    var websocket = await httpContext.WebSockets.AcceptWebSocketAsync().OrTimeout();
                     var serverBuffer = new byte[1024 * 4];
                     WebSocketReceiveResult receiveResult;
                     do
                     {
-                        await websocket.SendAsync(sendData, WebSocketMessageType.Binary, true, CancellationToken.None);
+                        await websocket.SendAsync(sendData, WebSocketMessageType.Binary, true, CancellationToken.None).OrTimeout();
                         receiveResult = await websocket.ReceiveAsync(serverBuffer, CancellationToken.None);
                     } while (!receiveResult.CloseStatus.HasValue);
 
                     await websocket.CloseAsync(WebSocketCloseStatus.NormalClosure, "stop connection",
-                        CancellationToken.None);
+                        CancellationToken.None).OrTimeout();
+                    serverTestComplete = true;
                 }
             }))
             {
-                await server.StartAsync();
+                await server.StartAsync().OrTimeout();
                 using (var ws = new WebSocketSharp.WebSocket(clientAddress))
                 {
-                    var hasReceive = false;
+                    ws.Log = CreateWebSocketLogger();
                     ws.OnMessage += (sender, args) =>
                     {
-                        Assert.True(args.IsBinary);
+                        Assert.False(args.IsBinary);
                         var data = args.RawData;
                         Assert.Equal(sendData.Length, data.Length);
                         Assert.Equal(sendData, data);
 
-                        hasReceive = true;
+                        clientTestComplete = true;
                     };
                     ws.Connect();
-                    SpinWait.SpinUntil(() => hasReceive);
+                    await Task.Factory.StartNew(() => SpinWait.SpinUntil(() => clientTestComplete)).OrTimeout();
                 }
             }
+            Assert.True(serverTestComplete, "server test assertion fail");
+            Assert.True(clientTestComplete, "client test assertion fail");
         }
+
 
 
         [Fact]
@@ -281,6 +290,13 @@ namespace NetCoreClientTest
                     ws.Close();
                 }
             }
+        }
+        
+        private WebSocketSharp.Logger CreateWebSocketLogger()
+        {
+            var logger = new WebSocketSharp.Logger(WebSocketSharp.LogLevel.Debug, null,
+                (logData, _) => { _testOutputHelper.WriteLine(logData.Message); });
+            return logger;
         }
     }
 }
