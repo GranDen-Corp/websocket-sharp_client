@@ -114,7 +114,7 @@ namespace NetCoreClientTest
                     ws.Log = CreateWebSocketLogger();
                     ws.OnMessage += (sender, args) =>
                     {
-                        Assert.False(args.IsBinary);
+                        Assert.True(args.IsBinary);
                         var data = args.RawData;
                         Assert.Equal(sendData.Length, data.Length);
                         Assert.Equal(sendData, data);
@@ -128,8 +128,6 @@ namespace NetCoreClientTest
             Assert.True(serverTestComplete, "server test assertion fail");
             Assert.True(clientTestComplete, "client test assertion fail");
         }
-
-
 
         [Fact]
         public async Task ClientCanReceiveTextData()
