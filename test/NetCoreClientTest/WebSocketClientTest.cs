@@ -25,7 +25,8 @@ namespace NetCoreClientTest
             //Arrange
             const string clientAddress = "ws://localhost:54321/ws";
             const string serverAddress = "http://localhost:54321";
-
+            var serverTestComplte = false;
+            
             var config = NetCoreWebSocketHelper.CreateConfigWithUrl(serverAddress);
             var originData = Encoding.UTF8.GetBytes("Hello World");
             var serverAction = new Func<HttpContext, Task>(async context =>
@@ -33,11 +34,11 @@ namespace NetCoreClientTest
                 if (context.Request.Path == "/ws")
                 {
                     Assert.True(context.WebSockets.IsWebSocketRequest);
-                    var webSocket = await context.WebSockets.AcceptWebSocketAsync();
+                    var webSocket = await context.WebSockets.AcceptWebSocketAsync().OrTimeout();
 
                     var serverBuffer = new byte[originData.Length];
                     var receiveResult =
-                        await webSocket.ReceiveAsync(new ArraySegment<byte>(serverBuffer), CancellationToken.None);
+                        await webSocket.ReceiveAsync(new ArraySegment<byte>(serverBuffer), CancellationToken.None).OrTimeout();
 
                     while (!receiveResult.CloseStatus.HasValue)
                     {
@@ -49,26 +50,29 @@ namespace NetCoreClientTest
 
                         receiveResult =
                             await webSocket.ReceiveAsync(new ArraySegment<byte>(serverBuffer),
-                                CancellationToken.None);
+                                CancellationToken.None).OrTimeout();
                     }
 
                     await webSocket.CloseAsync(receiveResult.CloseStatus.Value, receiveResult.CloseStatusDescription,
-                        CancellationToken.None);
+                        CancellationToken.None).OrTimeout();
+                    serverTestComplte = true;
                 }
             });
 
             //Act
             using (var server = NetCoreWebSocketHelper.CreateTestServer(config, _testOutputHelper, serverAction))
             {
-                await server.StartAsync();
+                await server.StartAsync().OrTimeout();
 
                 using (var ws = new WebSocketSharp.WebSocket(clientAddress))
                 {
+                    ws.Log = CreateWebSocketLogger();
                     ws.Connect();
                     ws.Send(originData);
                     ws.Close();
                 }
             }
+            Assert.True(serverTestComplte, "server test assertion fail");
         }
 
         [Fact]
@@ -80,29 +84,34 @@ namespace NetCoreClientTest
             const string sendText = "Hello World";
             var sendData = Encoding.UTF8.GetBytes(sendText);
             var config = NetCoreWebSocketHelper.CreateConfigWithUrl(serverAddress);
+            var serverTestComplete = false;
+            var clientTestComplete = false;
+
+            //Act & Assert
             using (var server = NetCoreWebSocketHelper.CreateTestServer(config, _testOutputHelper, async httpContext =>
             {
                 if (httpContext.Request.Path == "/ws")
                 {
                     Assert.True(httpContext.WebSockets.IsWebSocketRequest);
-                    var websocket = await httpContext.WebSockets.AcceptWebSocketAsync();
+                    var websocket = await httpContext.WebSockets.AcceptWebSocketAsync().OrTimeout();
                     var serverBuffer = new byte[1024 * 4];
                     WebSocketReceiveResult receiveResult;
                     do
                     {
-                        await websocket.SendAsync(sendData, WebSocketMessageType.Binary, true, CancellationToken.None);
+                        await websocket.SendAsync(sendData, WebSocketMessageType.Binary, true, CancellationToken.None).OrTimeout();
                         receiveResult = await websocket.ReceiveAsync(serverBuffer, CancellationToken.None);
                     } while (!receiveResult.CloseStatus.HasValue);
 
                     await websocket.CloseAsync(WebSocketCloseStatus.NormalClosure, "stop connection",
-                        CancellationToken.None);
+                        CancellationToken.None).OrTimeout();
+                    serverTestComplete = true;
                 }
             }))
             {
-                await server.StartAsync();
+                await server.StartAsync().OrTimeout();
                 using (var ws = new WebSocketSharp.WebSocket(clientAddress))
                 {
-                    var hasReceive = false;
+                    ws.Log = CreateWebSocketLogger();
                     ws.OnMessage += (sender, args) =>
                     {
                         Assert.True(args.IsBinary);
@@ -110,14 +119,15 @@ namespace NetCoreClientTest
                         Assert.Equal(sendData.Length, data.Length);
                         Assert.Equal(sendData, data);
 
-                        hasReceive = true;
+                        clientTestComplete = true;
                     };
                     ws.Connect();
-                    SpinWait.SpinUntil(() => hasReceive);
+                    await Task.Factory.StartNew(() => SpinWait.SpinUntil(() => clientTestComplete)).OrTimeout();
                 }
             }
+            Assert.True(serverTestComplete, "server test assertion fail");
+            Assert.True(clientTestComplete, "client test assertion fail");
         }
-
 
         [Fact]
         public async Task ClientCanReceiveTextData()
@@ -278,6 +288,13 @@ namespace NetCoreClientTest
                     ws.Close();
                 }
             }
+        }
+        
+        private WebSocketSharp.Logger CreateWebSocketLogger()
+        {
+            var logger = new WebSocketSharp.Logger(WebSocketSharp.LogLevel.Debug, null,
+                (logData, _) => { _testOutputHelper.WriteLine(logData.Message); });
+            return logger;
         }
     }
 }
