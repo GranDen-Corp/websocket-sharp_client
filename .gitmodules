@@ -1,4 +1,4 @@
 [submodule "src/websocket-sharp"]
 	path = src/websocket-sharp
-	url = https://github.com/windperson/websocket-sharp
+	url=https://github.com/GranDen-Corp/websocket-sharp.git
 	branch = client-only
