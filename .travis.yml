@@ -28,7 +28,7 @@ jobs:
       on:
         branch: master
         tags: true
-        repo: windperson/websocket-sharp_client
+        repo: GranDen-Corp/websocket-sharp_client
 stages:
 - Build
 - Tests
