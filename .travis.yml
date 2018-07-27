@@ -16,7 +16,7 @@ jobs:
     name: Build & Upload Nuget packages to github
     env:
       - SrcPrjCmd="dotnet pack src/websocket-sharp_client.csproj --include-source --output ../build"
-    script: betaTag=${TRAVIS_TAG//@(v+([0-9]).+([0-9]).+([0-9])?(-))/} ; if[ -z "$betaTag"]; then ${SrcPrjCmd} ; else ${SrcPrjCmd} --version-suffix ${betaTag}; fi
+    script: betaTag=${TRAVIS_TAG//@(v+([0-9]).+([0-9]).+([0-9])?(-))/} ; if [ -z "$betaTag" ]; then ${SrcPrjCmd}; else ${SrcPrjCmd} --version-suffix ${betaTag}; fi
     deploy:
       provider: releases
       skip_cleanup: true
