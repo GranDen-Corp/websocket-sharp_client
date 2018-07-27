@@ -11,12 +11,12 @@ jobs:
     script: dotnet build
   - stage: Tests
     name: Run End-to-End tests
-    script: dotnet dev-certs https && dotnet test test/NetCoreClientTest --verbosity
-      minimal
+    script: dotnet dev-certs https && dotnet test test/NetCoreClientTest --verbosity minimal
   - stage: Release
     name: Build & Upload Nuget packages to github
-    script: dotnet pack src/websocket-sharp_client.csproj --include-source --output
-      ../build
+    env:
+      - SrcPrjCmd="dotnet pack src/websocket-sharp_client.csproj --include-source --output ../build"
+    script: betaTag=${TRAVIS_TAG//@(v+([0-9]).+([0-9]).+([0-9])?(-))/} ; if[ -z "$betaTag"]; then ${SrcPrjCmd} ; else ${SrcPrjCmd} --version-suffix ${betaTag}; fi
     deploy:
       provider: releases
       skip_cleanup: true
@@ -33,4 +33,4 @@ stages:
 - Build
 - Tests
 - name: Release
-  if: tag IS present
+  if: tag IS present && branch = master
