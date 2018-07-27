@@ -33,4 +33,4 @@ stages:
 - Build
 - Tests
 - name: Release
-  if: tag IS present && branch = master
+  if: tag IS present
