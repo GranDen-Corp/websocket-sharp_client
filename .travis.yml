@@ -13,22 +13,28 @@ jobs:
     name: Run End-to-End tests
     script: dotnet dev-certs https && dotnet test test/NetCoreClientTest --verbosity minimal
   - stage: Release
-    name: Build & Upload Nuget packages to github
+    name: Build & Upload Nuget packages to Github & myget
     env:
       - SrcPrjCmd="dotnet pack src/websocket-sharp_client.csproj --include-source --output ../build"
     script: betaTag=${TRAVIS_TAG//@(v+([0-9]).+([0-9]).+([0-9])?(-))/} ; if [ -z "$betaTag" ]; then ${SrcPrjCmd}; else ${SrcPrjCmd} --version-suffix ${betaTag}; fi
     deploy:
-      provider: releases
-      skip_cleanup: true
-      overwrite: true
-      api_key:
-        secure: ynph7TdsTkb8McacwXHYGOjW0Cacvcxn697S+rg9g4sf3Yq2x8FIWELv7yhZQLGBSI7ZV0uMn2yT/2T1kwqi8CSA0uYBBKHC6a0gOqZtrpS+1YUbWol0+lwvv2BFqNhrfXaIlQIxtcY4VOpEgR7+iQFtSeNllQvsShUJovkFm7j57Yk2bBwhtbG9Yw5iFmsxRhla3He8R/J3ZcfLuTef1l8ElRFmPxvK2X+zkYwFzUDaK80VOlV/2DK7+Zg41eXkuSjSzjd7sxOBfmYO8EzCKeTwmRRbX9AJoEsjoGYV9I0LzkaUAZ/3KibnszeMwAsqJDR02tRVY9IR7wifPFBuTELxM0XHl0Bfiw9aEKqxhjdM1kYUgPjPG5kRstBrLshVVf3egjfyw+RsKX4P6KxSo8RCzx5jiDW9z4h2Q6TPHOje9hlbqcoiekPWwLM92M4hS+oqVSoQr6SgPmSUhY5rYw4RuBc0An8RUew/OsbB+G7ZP3aghgzGcgx1TC7H69CtIutYwW3tJhuuNyWRze93dV9fRee4WNFtpUJmf8UrdSffciOBrWV/txwnyhD1LQHYs5km2W/HijOH1vX1qfxEwes4otwkALjaB2JZurikv2bzJ3CgzYnv17BtpuAC5KAToyPq8obdP1UTRVY+nARhgYhq1CzER3d/xsv/1Tb0RsI=
-      file_glob: true
-      file: build/*.nupkg
-      on:
-        branch: master
-        tags: true
-        repo: GranDen-Corp/websocket-sharp_client
+      - provider: releases
+        skip_cleanup: true
+        overwrite: true
+        api_key:
+          secure: ynph7TdsTkb8McacwXHYGOjW0Cacvcxn697S+rg9g4sf3Yq2x8FIWELv7yhZQLGBSI7ZV0uMn2yT/2T1kwqi8CSA0uYBBKHC6a0gOqZtrpS+1YUbWol0+lwvv2BFqNhrfXaIlQIxtcY4VOpEgR7+iQFtSeNllQvsShUJovkFm7j57Yk2bBwhtbG9Yw5iFmsxRhla3He8R/J3ZcfLuTef1l8ElRFmPxvK2X+zkYwFzUDaK80VOlV/2DK7+Zg41eXkuSjSzjd7sxOBfmYO8EzCKeTwmRRbX9AJoEsjoGYV9I0LzkaUAZ/3KibnszeMwAsqJDR02tRVY9IR7wifPFBuTELxM0XHl0Bfiw9aEKqxhjdM1kYUgPjPG5kRstBrLshVVf3egjfyw+RsKX4P6KxSo8RCzx5jiDW9z4h2Q6TPHOje9hlbqcoiekPWwLM92M4hS+oqVSoQr6SgPmSUhY5rYw4RuBc0An8RUew/OsbB+G7ZP3aghgzGcgx1TC7H69CtIutYwW3tJhuuNyWRze93dV9fRee4WNFtpUJmf8UrdSffciOBrWV/txwnyhD1LQHYs5km2W/HijOH1vX1qfxEwes4otwkALjaB2JZurikv2bzJ3CgzYnv17BtpuAC5KAToyPq8obdP1UTRVY+nARhgYhq1CzER3d/xsv/1Tb0RsI=
+        file_glob: true
+        file: build/*.nupkg
+        on:
+          branch: master
+          tags: true
+          repo: GranDen-Corp/websocket-sharp_client
+      - provider: script
+        script: dotnet nuget push ./build/*.nupkg -k ${myget_apikey} -s ${myget_feed_url}
+        on:
+          branch: master
+          tags: true
+
 stages:
 - Build
 - Tests

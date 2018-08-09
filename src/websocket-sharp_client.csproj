@@ -16,8 +16,12 @@
           - HTTP Authentication (Basic/Digest)
           - Query String, Origin header and Cookies
           - Connecting through the HTTP Proxy server
-          - .NET 4.6 &amp; .NET Standard 2.0</Description>
-    <PackageTags>websocket</PackageTags>
+          - .NET 4.6 &amp; .NET Standard 2.0 compatible
+      
+    </Description>
+    <PackageTags>websocket;websocket-client;websocket-sharp</PackageTags>
+    <PackageProjectUrl>https://github.com/GranDen-Corp/websocket-sharp_client</PackageProjectUrl>
+    <PackageLicenseUrl>https://raw.githubusercontent.com/GranDen-Corp/websocket-sharp_client/master/LICENSE</PackageLicenseUrl>
     <PackageId>WebSocketSharp-client</PackageId>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
