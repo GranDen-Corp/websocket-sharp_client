@@ -30,6 +30,8 @@ jobs:
           tags: true
           repo: GranDen-Corp/websocket-sharp_client
       - provider: script
+        skip_cleanup: true
+        overwrite: true
         script: dotnet nuget push ./build/*.nupkg -k ${myget_apikey} -s ${myget_feed_url}
         on:
           branch: master
