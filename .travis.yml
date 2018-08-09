@@ -32,7 +32,7 @@ jobs:
       - provider: script
         skip_cleanup: true
         overwrite: true
-        script: dotnet nuget push ./build/*.nupkg -k ${myget_apikey} -s ${myget_feed_url}
+        script: dotnet nuget push ./build/ --force-english-output -k ${myget_apikey} -s ${myget_feed_url} 
         on:
           branch: master
           tags: true
