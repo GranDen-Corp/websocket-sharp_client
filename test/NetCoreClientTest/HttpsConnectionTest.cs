@@ -29,8 +29,8 @@ namespace NetCoreClientTest
 
             var config = NetCoreWebSocketHelper.CreateConfigWithUrl(serverAddress);
             const string textData = "Hello World";
-            var serverTestPassed = false;
-            var clientTestPassed = false;
+            bool serverTestPassed = false;
+            bool clientTestPassed;
 
             var serverAction = new Func<HttpContext, Task>(async httpContext =>
             {
@@ -74,10 +74,9 @@ namespace NetCoreClientTest
             using (var server = NetCoreWebSocketHelper.CreateTestServer(config, _testOutputHelper, serverAction, true))
             {
                 await server.StartAsync();
-                using (var ws = new WebSocketSharp.WebSocket(clientAddress))
+                using (var ws = new WebSocketSharp.WebSocket(clientAddress, logger))
                 {
                     var hasComplete = false;
-                     ws.Log = logger;
                     ws.OnMessage += (sender, args) =>
                     {
                         Assert.True(args.IsText,"websocket should be text mode");
@@ -131,10 +130,8 @@ namespace NetCoreClientTest
             using (var server = NetCoreWebSocketHelper.CreateTestServer(config, _testOutputHelper, serverAction, true))
             {
                 await server.StartAsync();
-                using (var ws = new WebSocketSharp.WebSocket(clientAddress))
+                using (var ws = new WebSocketSharp.WebSocket(clientAddress, logger))
                 {
-                    ws.Log = logger;
-                    //ws.Log.Level = LogLevel.Debug;
                     var testCompleted = false;
                     ws.OnError += (sender, args) =>
                     {

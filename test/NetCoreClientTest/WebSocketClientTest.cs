@@ -65,9 +65,8 @@ namespace NetCoreClientTest
             {
                 await server.StartAsync().OrTimeout();
 
-                using (var ws = new WebSocketSharp.WebSocket(clientAddress))
+                using (var ws = new WebSocketSharp.WebSocket(clientAddress, CreateWebSocketLogger()))
                 {
-                    ws.Log = CreateWebSocketLogger();
                     ws.Connect();
                     ws.Send(originData);
                     ws.Close();
@@ -112,9 +111,8 @@ namespace NetCoreClientTest
             }))
             {
                 await server.StartAsync().OrTimeout();
-                using (var ws = new WebSocketSharp.WebSocket(clientAddress))
+                using (var ws = new WebSocketSharp.WebSocket(clientAddress, CreateWebSocketLogger()))
                 {
-                    ws.Log = CreateWebSocketLogger();
                     ws.OnMessage += (sender, args) =>
                     {
                         Assert.True(args.IsBinary);
@@ -168,10 +166,9 @@ namespace NetCoreClientTest
                 }))
             {
                 await server.StartAsync().OrTimeout();
-                using (var ws = new WebSocketSharp.WebSocket(clientAddress))
+                using (var ws = new WebSocketSharp.WebSocket(clientAddress, CreateWebSocketLogger()))
                 {
                     var hasReceive = false;
-                    ws.Log = CreateWebSocketLogger();
                     ws.OnMessage += (sender, args) =>
                     {
                         Assert.True(args.IsText);
@@ -290,10 +287,9 @@ namespace NetCoreClientTest
             using (var server = NetCoreWebSocketHelper.CreateTestServer(config, _testOutputHelper, serverAction))
             {
                 await server.StartAsync().OrTimeout();
-                using (var ws = new WebSocketSharp.WebSocket(clientAddress))
+                using (var ws = new WebSocketSharp.WebSocket(clientAddress, CreateWebSocketLogger()))
                 {
                     var hasSent = false;
-                    ws.Log = CreateWebSocketLogger();
                     ws.OnMessage += (sender, args) =>
                     {
                         var data = args.Data;

@@ -85,9 +85,8 @@ namespace NetCoreClientTest
                 await originServer.StartAsync().OrTimeout();
                 await realServer.StartAsync().OrTimeout();
 
-                using (var ws = new WebSocketSharp.WebSocket(clientOriginAddress))
+                using (var ws = new WebSocketSharp.WebSocket(clientOriginAddress, CreateWebSocketLogger()))
                 {
-                    ws.Log = CreateWebSocketLogger();
                     ws.EnableRedirection = true;
                     ws.Connect();
                     Assert.Equal(clientRealAddress, ws.Url.OriginalString);
